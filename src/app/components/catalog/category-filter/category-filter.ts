@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CatalogService, Category } from '../../../services/catalogService';
+import { CatalogService } from '../../../services/catalogService';
 
 @Component({
   selector: 'app-category-filter',
@@ -10,15 +10,9 @@ import { CatalogService, Category } from '../../../services/catalogService';
 export class CategoryFilter {
   readonly catalog = inject(CatalogService);
 
-  readonly categories: Array<{ key: Category; label: string }> = [
-    { key: 'ALL', label: 'Todos los productos' },
-    { key: 'Movilidad', label: 'Movilidad' },
-    { key: 'Higiene y Baño', label: 'Higiene y Baño' },
-    { key: 'Descanso', label: 'Descanso' },
-    { key: 'Ortopedia Técnica', label: 'Ortopedia Técnica' },
-  ];
+  readonly categories = this.catalog.categoriesWithCounts;
 
-  select(cat: Category) {
+  select(cat: string) {
     this.catalog.setCategory(cat);
   }
 }

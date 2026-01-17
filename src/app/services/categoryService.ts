@@ -1,4 +1,5 @@
 import { Injectable, computed, effect, signal, inject } from '@angular/core';
+import { SupabaseService } from './supabase-service';
 import { ItemStore } from '../models/list.types';
 import { CategoryItem } from '../models/category';
 import { ProductService } from './productService';
@@ -7,38 +8,94 @@ import { ProductService } from './productService';
 export class CategoryService implements ItemStore<CategoryItem> {
     private readonly productService = inject(ProductService);
 
-    // RAW CATEGORIES (No counts)
-    private readonly _rawItems = signal<Omit<CategoryItem, 'productsCount'>[]>([
-        {
-            id: 'c1',
-            name: 'Movilidad',
-            description: 'Sillas de ruedas, andadores y bastones',
-        },
-        {
-            id: 'c2',
-            name: 'Higiene y Baño',
-            description: 'Elevadores, asideros y sillas de ducha',
-        },
-        {
-            id: 'c3',
-            name: 'Descanso',
-            description: 'Camas articuladas y colchones antiescaras',
-        },
-        {
-            id: 'c4',
-            name: 'Ortopedia Técnica',
-            description: 'Prótesis y órtesis a medida',
-        },
-    ]);
+    private readonly sb = inject(SupabaseService).client;
+
+    readonly loading = signal(false);
+    readonly error = signal<string | null>(null);
+
+    private readonly _rawItems = signal<Omit<CategoryItem, 'productsCount'>[]>([]);
+
+    async load(): Promise<void> {
+        this.loading.set(true);
+        this.error.set(null);
+
+        const { data, error } = await this.sb
+            .from('categories')
+            .select('*')
+            .order('name', { ascending: true });
+
+        if (error) {
+            this.error.set(error.message);
+            this.loading.set(false);
+            return;
+        }
+
+        this._rawItems.set((data ?? []) as Omit<CategoryItem, 'productsCount'>[]);
+        this.loading.set(false);
+    }
+
+    async create(payload: Omit<CategoryItem, 'id' | 'productsCount'>): Promise<CategoryItem | null> {
+        this.error.set(null);
+
+        // Sanitize payload: remove id if present (e.g. empty string) and productsCount
+        const { id, productsCount, ...rest } = payload as any;
+
+        const { data, error } = await this.sb
+            .from('categories')
+            .insert(rest)
+            .select('*')
+            .single();
+
+        if (error) {
+            this.error.set(error.message);
+            return null;
+        }
+        const created = data as Omit<CategoryItem, 'productsCount'>;
+        this._rawItems.update((list) => [created, ...list]);
+        return { ...created, productsCount: 0 };
+    }
+
+    async update(id: string, patch: Partial<Omit<CategoryItem, 'id' | 'productsCount'>>): Promise<CategoryItem | null> {
+        this.error.set(null);
+
+        // Sanitize: remove id/productsCount if present
+        const { id: _id, productsCount, ...rest } = patch as any;
+
+        const { data, error } = await this.sb
+            .from('categories')
+            .update(rest)
+            .eq('id', id)
+            .select('*')
+            .single();
+
+        if (error) {
+            this.error.set(error.message);
+            return null;
+        }
+        const updated = data as Omit<CategoryItem, 'productsCount'>;
+        this._rawItems.update((list) => list.map(c => c.id === id ? updated : c));
+        return { ...updated, productsCount: 0 };
+    }
+
+    async remove(id: string): Promise<boolean> {
+        this.error.set(null);
+        const { error } = await this.sb.from('categories').delete().eq('id', id);
+        if (error) {
+            this.error.set(error.message);
+            return false;
+        }
+        this._rawItems.update((list) => list.filter(c => c.id !== id));
+        return true;
+    }
 
     // ITEMS WITH COMPUTED COUNTS
-    private readonly _items = computed<CategoryItem[]>(() => {
+    readonly items = computed<CategoryItem[]>(() => {
         const products = this.productService.items();
         const cats = this._rawItems();
 
         return cats.map((c) => ({
             ...c,
-            productsCount: products.filter((p) => p.category === c.name).length,
+            productsCount: products.filter((p) => p.category?.name === c.name).length,
         }));
     });
 
@@ -50,7 +107,7 @@ export class CategoryService implements ItemStore<CategoryItem> {
     private readonly _filtered = computed<CategoryItem[]>(() => {
         const term = this.search().trim().toLowerCase();
 
-        return this._items().filter((c) => {
+        return this.items().filter((c) => {
             if (!term) return true;
             const hay = `${c.name} ${c.description}`.toLowerCase();
             return hay.includes(term);
@@ -101,4 +158,8 @@ export class CategoryService implements ItemStore<CategoryItem> {
     }
 
     rowId = (item: CategoryItem) => item.id;
+
+    constructor() {
+        this.load();
+    }
 }

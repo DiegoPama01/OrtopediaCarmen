@@ -9,5 +9,6 @@ export interface CategoryItem {
     id: string;
     name: string;
     description: string;
+    icon?: string;
     productsCount: number;
 }

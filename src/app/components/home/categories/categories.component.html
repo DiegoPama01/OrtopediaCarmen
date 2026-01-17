@@ -5,7 +5,7 @@
             <div class="w-16 h-1 bg-accent mx-auto"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @for(category of categories; track category){
+            @for(category of categories(); track category.title){
             <app-category-card [category]="category"></app-category-card>
             }
         </div>

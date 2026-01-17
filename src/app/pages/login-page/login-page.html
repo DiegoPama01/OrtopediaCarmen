@@ -30,11 +30,7 @@
                 }
             </div>
             <div class="flex flex-col gap-2">
-                <div class="flex justify-between items-center">
-                    <label class="text-[#181411] dark:text-white text-sm font-semibold">Contraseña</label>
-                    <a class="text-[#f27f0d] text-xs font-semibold hover:underline cursor-pointer">¿Olvidó su
-                        contraseña?</a>
-                </div>
+                <label class="text-[#181411] dark:text-white text-sm font-semibold">Contraseña</label>
                 <div class="relative">
                     <span
                         class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8a7560] text-[20px]">lock</span>
@@ -61,6 +57,11 @@
                 type="submit">
                 Iniciar Sesión
             </button>
+            @if (error) {
+            <div class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm text-center">
+                {{ error }}
+            </div>
+            }
         </form>
     </app-auth-card>
 </main>

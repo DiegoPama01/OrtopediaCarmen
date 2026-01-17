@@ -1,22 +1,17 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { ProductService } from './productService';
+import { CategoryService } from './categoryService';
 import { ProductItem } from '../models/product';
 
 export type SortOption = 'newest' | 'priceAsc' | 'priceDesc' | 'nameAsc';
 
-export type Category =
-  | 'ALL'
-  | 'Movilidad'
-  | 'Higiene y Baño'
-  | 'Descanso'
-  | 'Ortopedia Técnica';
-
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
   private readonly productService = inject(ProductService);
+  private readonly categoryService = inject(CategoryService);
 
   readonly searchTerm = signal<string>('');
-  readonly selectedCategory = signal<Category>('ALL');
+  readonly selectedCategory = signal<string>('ALL');
 
   readonly inStock = signal<boolean>(true);
   readonly backorder = signal<boolean>(true);
@@ -42,17 +37,19 @@ export class CatalogService {
 
     return this.products().filter((p) => {
 
-      if (cat !== 'ALL' && p.category !== cat) return false;
+      const catName = p.category?.name;
+
+      if (cat !== 'ALL' && catName !== cat) return false;
 
       const okAvailability =
-        (allowInStock && p.stock === 'in_stock') ||
-        (allowBackorder && p.stock === 'backorder');
+        (allowInStock && p.quantity > 0) ||
+        (allowBackorder && p.quantity === 0);
       if (!okAvailability) return false;
 
       if (p.price < min || p.price > max) return false;
 
       if (term) {
-        const haystack = `${p.name} ${p.description} ${p.category}`.toLowerCase();
+        const haystack = `${p.name} ${p.description} ${catName ?? 'Sin categoría'}`.toLowerCase();
         if (!haystack.includes(term)) return false;
       }
 
@@ -102,22 +99,24 @@ export class CatalogService {
     return `Mostrando ${end - start + 1} de ${total} artículos`;
   });
 
-  readonly categoryCounts = computed<Record<Category, number>>(() => {
-    const counts: Record<Category, number> = {
-      ALL: 0,
-      'Movilidad': 0,
-      'Higiene y Baño': 0,
-      'Descanso': 0,
-      'Ortopedia Técnica': 0,
-    };
-    const all = this.products();
-    counts.ALL = all.length;
-    for (const p of all) {
-      if (p.category in counts && p.category !== 'ALL') {
-        counts[p.category as Category] += 1;
-      }
-    }
-    return counts;
+  // Expose simplified list for filter component
+  readonly categoriesWithCounts = computed(() => {
+    const allCount = this.products().length;
+    const dbCats = this.categoryService.items();
+
+    // Map DB categories. counts are already computed in CategoryService
+    const dynamicCats = dbCats
+      .filter(c => c.productsCount > 0) // Only show categories with products
+      .map(c => ({
+        key: c.name,
+        label: c.name,
+        count: c.productsCount
+      }));
+
+    return [
+      { key: 'ALL', label: 'Todos los productos', count: allCount },
+      ...dynamicCats
+    ];
   });
 
   private readonly _resetPageOnChanges = effect(() => {
@@ -136,7 +135,7 @@ export class CatalogService {
     this.searchTerm.set(term ?? '');
   }
 
-  setCategory(cat: Category) {
+  setCategory(cat: string) {
     this.selectedCategory.set(cat);
   }
 
@@ -188,5 +187,9 @@ export class CatalogService {
     this.sort.set('newest');
     this.pageIndex.set(0);
     this.pageSize.set(12);
+  }
+
+  constructor() {
+    this.productService.load();
   }
 }

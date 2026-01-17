@@ -13,6 +13,6 @@ export class ProductCard {
   @Input({ required: true }) product!: ProductItem;
 
   get availabilityLabel() {
-    return this.product.stock === 'in_stock' ? 'En Stock' : 'Bajo Pedido';
+    return this.product.quantity > 0 ? 'En Stock' : 'Bajo Pedido';
   }
 }

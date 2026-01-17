@@ -1,1 +1,33 @@
-/* Styles handled by Tailwind CSS */
+/* Infinite Carousel Animation */
+.carousel-track {
+    animation: scroll 30s linear infinite;
+    will-change: transform;
+}
+
+.carousel-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* Move by half the total width (3 items + gap) */
+        transform: translateX(calc(-1 * (400px + 2rem) * 3));
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(calc(-1 * (350px + 2rem) * 3));
+        }
+    }
+}

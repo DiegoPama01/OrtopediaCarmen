@@ -8,6 +8,6 @@
     </div>
     <h3 class="text-primary text-2xl font-bold mb-4">{{category.title}}</h3>
     <p class="text-gray-500 font-light text-sm mb-8 leading-relaxed">{{category.description}}</p>
-    <a class="mt-auto text-xs font-bold uppercase tracking-widest text-accent hover:underline" href="#">Explorar
-        productos</a>
+    <a class="mt-auto text-xs font-bold uppercase tracking-widest text-accent hover:underline cursor-pointer"
+        routerLink="/catalog" [queryParams]="{category: category.title}">Explorar productos</a>
 </div>

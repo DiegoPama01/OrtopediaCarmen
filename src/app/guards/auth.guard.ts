@@ -16,8 +16,8 @@ export const authGuard: CanActivateFn = (route, state) => {
         filter((loading) => !loading), // Wait until loading is false
         take(1), // Take the first 'false' value
         switchMap(() => isLoggedIn$.pipe(take(1))), // Get current login status
-        map((isLoggedIn) => {
-            if (isLoggedIn) {
+        map(() => {
+            if (auth.isSessionValid()) {
                 return true;
             }
             return router.createUrlTree(['/login']);

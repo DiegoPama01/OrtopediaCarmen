@@ -1,2 +1,5 @@
 <app-admin-list-shell [store]="store" [config]="config">
 </app-admin-list-shell>
+
+<app-product-modal [open]="showModal()" [product]="editingProduct()" [categories]="catStore.items()" [saving]="adding()"
+    (cancel)="closeModal()" (save)="onSave($event)"></app-product-modal>

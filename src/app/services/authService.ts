@@ -14,17 +14,25 @@ export class AuthService {
   readonly isLoggedIn = computed(() => !!this.user());
 
   constructor() {
-    // 1) Cargar sesión actual
     supabase.auth.getSession().then(({ data, error }) => {
       if (error) this.error.set(error.message);
       this.session.set(data.session ?? null);
       this.loading.set(false);
     });
 
-    // 2) Escuchar cambios de auth (login/logout/refresh)
     supabase.auth.onAuthStateChange((_event, session) => {
       this.session.set(session ?? null);
     });
+  }
+
+  isSessionValid(): boolean {
+    const session = this.session();
+    if (!session) return false;
+    const expiresAt = session.expires_at;
+    // If no expiry, assume valid (or handle as per requirement). 
+    // Supabase session always has expires_at.
+    if (!expiresAt) return true;
+    return expiresAt > Math.floor(Date.now() / 1000);
   }
 
   async signIn(email: string, password: string) {
@@ -48,7 +56,7 @@ export class AuthService {
       this.error.set(error.message);
       return { ok: false as const, error: error.message };
     }
-    // Ojo: según config, puede requerir confirmación por email
+
     this.session.set(data.session ?? null);
     return { ok: true as const };
   }

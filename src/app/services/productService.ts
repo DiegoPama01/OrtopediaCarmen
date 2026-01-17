@@ -1,72 +1,24 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { ItemStore } from '../models/list.types';
 import { ProductItem } from '../models/product';
+import { SupabaseService } from './supabase-service';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService implements ItemStore<ProductItem> {
-  // MOCK DATA
-  private readonly _items = signal<ProductItem[]>([
-    {
-      id: '1',
-      name: 'Silla de Ruedas Ligera',
-      sku: 'ORT-001',
-      category: 'Movilidad',
-      description: 'Estructura ligera de aluminio con motor de alto rendimiento.',
-      price: 249,
-      stock: 'in_stock',
-      quantity: 10,
-      imageUrl:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuBE1PVQV3fyduN-c-XY-6Mggpi-re24_i-pE1K7PyGInmhvBMquoYBUtnI1tvvgH0oKeweO5hIUJccwIJScaYw3O0ZNReiF8DsT1L8rjBFGmoOELSyplOezXztb_dHcbay7rKCWa3XnS_vIjGRq8PX67dCQIKGdkNeICXJSRcLw1yNoE70Wm03Y5Ph76RH_PGVABZb4l9R453wrlDEK7ALLfTEcsBNQpYNAS18G_TmHzGGZMtywM1utkT-A3D2FxZq6MW7wwimnj3El',
-    },
-    {
-      id: '2',
-      name: 'Muletas Ergonómicas Pro',
-      sku: 'ORT-042',
-      category: 'Movilidad',
-      description: 'Frenos de seguridad progresivos y asiento ergonómico.',
-      price: 45,
-      stock: 'in_stock',
-      quantity: 10,
-      imageUrl:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuCTNWbREdW3IlVn7wqtty1-c5Vq3HLJSLrCe1N7SrnYoNu95fm1GaKBLrytvhCoZNLAwd2Ei66UGHV9AvjJqdnGUiIvL4SauTK2Mi3rr1AQ_wOVfiGvLNRTOI06KJ5m-BNxq-CwkPrz0hNLEGN3ZTrPSm_g2tP8JCt56HruEXO29e9URpb6HCIC5rAJc6rKmxP4iBUUGxlBBkpX5VXmk8S5EMb9AkGDG9bUW8eg2DExm3PhXSfQ9ZHGQrMCRvVPtOoyVimAFkGkebNB',
-    },
-    {
-      id: '3',
-      name: 'Faja Lumbar Reforzada',
-      sku: 'ORT-115',
-      category: 'Soportes',
-      description: '4 planos de articulación eléctrica con control remoto.',
-      price: 32.5,
-      quantity: 10,
-      stock: 'in_stock',
-      imageUrl:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDo5RegbO7DUfOJWjwK8RnHvv9OgJp6hp8KImRZAYdaDwllHlNJ6iipe4zMA44YKhTC2PCSOwieC3y1OTAVHCGK_1f81OFtuR0_WswCJ46XJgrxjxLLc3SVbmzAG3yh2PHl0AG6U-1k64inbou8TDh7VSIZHRLuPq9Wu5hogosxKCvVN-G3j7oTM7xOlOPeokZywdVbPwGBdr8r3jG5RQK86jlAbGqWjgJzj23XCLmqh9C9ER5o55un8Bd7_j5Hz7vU8U_hOL1679NG',
-    },
-    {
-      id: '4',
-      name: 'Andador con Asiento Confort',
-      sku: 'ORT-089',
-      category: 'Movilidad',
-      description: 'Diseño ultraligero para usuarios activos.',
-      price: 89,
-      quantity: 10,
-      stock: 'backorder',
-      imageUrl:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDxWW7b4Dg28FQloD-Qy1RvAm4aEtGOubPHXfiJRIckycQ1JMXkfTu6d8uM5ydtgB-emEbBc0cPWjoS1Xc5-nGyL4_GQiJvH6DQb4zz1-dhlKCQ8wRTAnPMgef9U5DN0Trwhe1-fRPCqY62Cd6m1yA11UV_GrNHGd8jgBAsuoeerBV3QN74YVPr4hg29tQOq6Q5nAj0HnHU3Fn3ItZRg8fVA0dah5IdrS1gubEkbDwEw9irWPA5k9sIwpuM81xionLqgJErabqLGzpN',
-    },
-  ]);
-
+  private readonly sb = inject(SupabaseService).client;
+  private readonly _items = signal<ProductItem[]>([]);
   readonly items = this._items.asReadonly();
 
-  readonly search = signal<string>('');
-  readonly category = signal<string>('ALL'); // Keep category filter as it's relevant for products
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
 
+  readonly search = signal<string>('');
+  readonly category = signal<string>('ALL');
   readonly pageIndex = signal<number>(0);
   readonly pageSize = signal<number>(10);
 
-  // Helper to list available categories based on products
   readonly categories = computed<string[]>(() => {
-    const set = new Set(this._items().map((i) => i.category));
+    const set = new Set(this._items().map((i) => i.category?.name ?? '').filter(n => !!n));
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'es'));
   });
 
@@ -75,9 +27,10 @@ export class ProductService implements ItemStore<ProductItem> {
     const cat = this.category();
 
     return this._items().filter((p) => {
-      if (cat !== 'ALL' && p.category !== cat) return false;
+      const catName = p.category?.name;
+      if (cat !== 'ALL' && catName !== cat) return false;
       if (!term) return true;
-      const hay = `${p.name} ${p.sku}`.toLowerCase();
+      const hay = p.name.toLowerCase();
       return hay.includes(term);
     });
   });
@@ -108,6 +61,10 @@ export class ProductService implements ItemStore<ProductItem> {
     this.pageIndex.set(0);
   });
 
+  constructor() {
+    this.load();
+  }
+
   setSearch(value: string): void {
     this.search.set(value ?? '');
   }
@@ -131,4 +88,151 @@ export class ProductService implements ItemStore<ProductItem> {
   }
 
   rowId = (item: ProductItem) => item.id;
+
+  private normalizeImageUrl(url: any): string | undefined {
+    if (!url) return undefined;
+    if (typeof url === 'string') {
+      // Check if it's a JSON string like "[\"https://...\"]"
+      if (url.startsWith('[') && url.endsWith(']')) {
+        try {
+          const parsed = JSON.parse(url);
+          return Array.isArray(parsed) && parsed.length > 0 ? parsed[0] : undefined;
+        } catch {
+          return url; // If parse fails, return as-is
+        }
+      }
+      return url; // Already a plain string URL
+    }
+    if (Array.isArray(url) && url.length > 0) {
+      return url[0]; // If somehow it's an actual array
+    }
+    return undefined;
+  }
+
+  async load(): Promise<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    const { data, error } = await this.sb
+      .from('products')
+      .select('*, category:categories(*)')
+      .order('name', { ascending: true });
+
+    if (error) {
+      this.error.set(error.message);
+      this.loading.set(false);
+      return;
+    }
+
+    // Normalize imageUrl for all products
+    const normalized = (data ?? []).map(p => ({
+      ...p,
+      imageUrl: this.normalizeImageUrl(p.imageUrl)
+    }));
+
+    this._items.set(normalized as ProductItem[]);
+    this.loading.set(false);
+  }
+
+  async create(payload: Omit<ProductItem, 'id'>): Promise<ProductItem | null> {
+    this.error.set(null);
+
+    // Prepare payload for DB insertion
+    // 1. Strip 'id' if it exists in payload (it's optional in interface but might be passed as "")
+    // 2. Map category object to category ID (assuming column is 'category')
+    const { id, category, ...rest } = payload as any; // Cast to any to access potentially present but typed-out props
+
+    const dbPayload = {
+      ...rest,
+      category: category?.id ?? null
+    };
+
+    const { data, error } = await this.sb
+      .from('products')
+      .insert(dbPayload)
+      .select('*, category:categories(*)') // Select with join to get full object back
+      .single();
+
+    if (error) {
+      this.error.set(error.message);
+      return null;
+    }
+
+    const created = {
+      ...data,
+      imageUrl: this.normalizeImageUrl(data.imageUrl)
+    } as ProductItem;
+    this._items.update((list) => [created, ...list]);
+    return created;
+  }
+
+  async update(id: string, patch: Partial<Omit<ProductItem, 'id'>>): Promise<ProductItem | null> {
+    this.error.set(null);
+
+    // Prepare payload
+    // Map category object to category ID if present in patch
+    const { category, ...rest } = patch as any;
+
+    const dbPayload: any = { ...rest };
+    if (category !== undefined) {
+      dbPayload.category = category?.id ?? null;
+    }
+
+    const { data, error } = await this.sb
+      .from('products')
+      .update(dbPayload)
+      .eq('id', id)
+      .select('*, category:categories(*)') // Select with join
+      .single();
+
+    if (error) {
+      this.error.set(error.message);
+      return null;
+    }
+
+    const updated = {
+      ...data,
+      imageUrl: this.normalizeImageUrl(data.imageUrl)
+    } as ProductItem;
+    this._items.update((list) => list.map((p) => (p.id === id ? updated : p)));
+    return updated;
+  }
+
+  async remove(id: string): Promise<boolean> {
+    this.error.set(null);
+
+    const { error } = await this.sb
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      this.error.set(error.message);
+      return false;
+    }
+
+    this._items.update((list) => list.filter((p) => p.id !== id));
+    return true;
+  }
+  async uploadImage(file: File): Promise<string | null> {
+    this.error.set(null);
+    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+
+    // 1. Upload
+    const { error: uploadError } = await this.sb.storage
+      .from('products')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      this.error.set(uploadError.message);
+      return null;
+    }
+
+    // 2. Get Public URL
+    const { data } = this.sb.storage
+      .from('products')
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
+  }
 }

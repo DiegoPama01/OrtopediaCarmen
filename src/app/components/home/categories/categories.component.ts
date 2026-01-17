@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { Category } from '../../../models/category';
 import { CategoryCard } from '../category-card/category-card.component';
+import { CategoryService } from '../../../services/categoryService';
 
 @Component({
     selector: 'app-categories',
@@ -10,24 +11,17 @@ import { CategoryCard } from '../category-card/category-card.component';
     styleUrl: './categories.component.css'
 })
 export class CategoriesComponent {
-    categories: Category[] = [
-        {
-            icon: 'spa',
-            title: 'Bienestar',
-            description: 'Descanso, confort y cuidado corporal diseñado para su tranquilidad diaria.',
-            link: '#'
-        },
-        {
-            icon: 'wheelchair_pickup',
-            title: 'Movilidad',
-            description: 'Sillas de ruedas, andadores y ayudas técnicas para facilitar sus desplazamientos.',
-            link: '#'
-        },
-        {
-            icon: 'night_shelter',
-            title: 'Vida Diaria',
-            description: 'Ayudas para el baño y el hogar que facilitan las tareas cotidianas.',
-            link: '#'
-        }
-    ]
+    private categoryService = inject(CategoryService);
+
+    // Map database categories to display format (max 3 for home page)
+    categories = computed<Category[]>(() => {
+        return this.categoryService.items()
+            .slice(0, 3) // Show only first 3 categories
+            .map(cat => ({
+                icon: cat.icon || 'category', // Use icon from DB or default
+                title: cat.name,
+                description: cat.description || `Productos de ${cat.name.toLowerCase()}`,
+                link: `/catalog?category=${encodeURIComponent(cat.name)}` // Pass category as query param   
+            }));
+    });
 }
