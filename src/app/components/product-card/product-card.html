@@ -1,0 +1,57 @@
+<div class="group flex flex-col">
+    <div class="aspect-[4/5] bg-white border border-gray-100 relative overflow-hidden mb-6">
+        @if (product.imageUrl) {
+        <img [alt]="product.name"
+            class="w-full h-full object-contain p-10 grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+            [src]="product.imageUrl" />
+        } @else {
+        <div class="w-full h-full flex items-center justify-center bg-surface-light">
+            <span class="material-symbols-outlined text-4xl text-gray-200">image</span>
+        </div>
+        }
+
+        <div class="absolute top-4 left-4 flex flex-col gap-2">
+            <span class="text-white text-[9px] font-bold px-2 py-1 uppercase tracking-widest"
+                [class.bg-primary]="product.availability === 'in_stock'"
+                [class.bg-gray-400]="product.availability !== 'in_stock'">
+                {{ availabilityLabel }}
+            </span>
+
+            @if (product.badges?.includes('Novedad')) {
+            <span class="bg-brand-orange text-white text-[9px] font-bold px-2 py-1 uppercase tracking-widest">
+                Novedad
+            </span>
+            }
+            @if (product.badges?.includes('Top Ventas')) {
+            <span class="bg-brand-orange text-white text-[9px] font-bold px-2 py-1 uppercase tracking-widest">
+                Top Ventas
+            </span>
+            }
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-1">
+        <span class="text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] mb-2">
+            {{ product.category }}
+        </span>
+
+        <h3 class="text-base font-medium text-primary mb-1 group-hover:text-brand-orange transition-colors">
+            {{ product.name }}
+        </h3>
+
+        <p class="text-sm text-gray-500 font-light mb-4 line-clamp-1">
+            {{ product.description }}
+        </p>
+
+        <div class="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
+            <span class="text-lg font-bold text-accent">
+                {{ product.price | number:'1.2-2' }} €
+            </span>
+
+            <button type="button"
+                class="text-accent text-[10px] font-black uppercase tracking-widest hover:text-brand-dark transition-colors">
+                Ver detalles
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div>
+    <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-6 border-b border-gray-100 pb-2">
+        Rango de Precio
+    </h3>
+
+    <div class="px-1">
+        <input class="w-full accent-brand-orange h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer" type="range"
+            [min]="min" [max]="max" [step]="step" [value]="catalog.maxPrice()"
+            (input)="onMaxChange(($any($event.target)).value)" />
+
+        <div class="flex justify-between mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <span>0€</span>
+            <span>{{ catalog.maxPrice() | number:'1.0-0' }}€+</span>
+        </div>
+    </div>
+</div>

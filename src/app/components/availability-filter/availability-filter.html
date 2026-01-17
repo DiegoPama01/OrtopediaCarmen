@@ -1,0 +1,23 @@
+<div>
+    <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-6 border-b border-gray-100 pb-2">
+        Disponibilidad
+    </h3>
+
+    <div class="flex flex-col gap-4">
+        <label class="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" class="rounded border-gray-300 text-brand-orange focus:ring-brand-orange"
+                [checked]="catalog.inStock()" (change)="setInStock(($any($event.target)).checked)" />
+            <span class="text-sm text-gray-600 group-hover:text-primary transition-colors">
+                En stock
+            </span>
+        </label>
+
+        <label class="flex items-center gap-3 cursor-pointer group">
+            <input type="checkbox" class="rounded border-gray-300 text-brand-orange focus:ring-brand-orange"
+                [checked]="catalog.backorder()" (change)="setBackorder(($any($event.target)).checked)" />
+            <span class="text-sm text-gray-600 group-hover:text-primary transition-colors">
+                Bajo pedido
+            </span>
+        </label>
+    </div>
+</div>

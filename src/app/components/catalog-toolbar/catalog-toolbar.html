@@ -1,0 +1,22 @@
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <p class="text-xs text-gray-400 uppercase tracking-widest">
+        Mostrando
+        <span class="text-primary font-bold">{{ catalog.pageItems().length }}</span>
+        de
+        <span class="text-primary font-bold">{{ catalog.totalFiltered() }}</span>
+        artículos
+    </p>
+
+    <div class="flex items-center gap-2">
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            Ordenar por
+        </span>
+
+        <select class="bg-transparent border-none text-sm font-bold text-primary focus:ring-0 cursor-pointer pr-8"
+            [value]="catalog.sort()" (change)="onSortChange(($any($event.target)).value)">
+            @for (opt of sortOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+            }
+        </select>
+    </div>
+</div>

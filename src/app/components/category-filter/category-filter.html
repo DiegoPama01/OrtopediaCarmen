@@ -1,0 +1,28 @@
+<div>
+    <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-6 border-b border-gray-100 pb-2">
+        Categorías
+    </h3>
+
+    <ul class="flex flex-col gap-2">
+        @for (c of categories; track c.key) {
+        <li>
+            <button type="button"
+                class="w-full flex items-center justify-between py-2 text-sm transition-colors hover:cursor-pointer group"
+                [class.text-brand-orange]="catalog.selectedCategory() === c.key"
+                [class.font-bold]="catalog.selectedCategory() === c.key"
+                [class.text-gray-500]="catalog.selectedCategory() !== c.key" (click)="select(c.key)">
+                <span class="flex items-center gap-2">{{ c.label }}</span>
+
+                <span class="text-[10px] px-2 py-0.5 rounded border transition-colors"
+                    [class.bg-brand-orange/10]="catalog.selectedCategory() === c.key"
+                    [class.text-brand-orange]="catalog.selectedCategory() === c.key"
+                    [class.border-brand-orange/20]="catalog.selectedCategory() === c.key"
+                    [class.text-gray-300]="catalog.selectedCategory() !== c.key"
+                    [class.border-gray-200]="catalog.selectedCategory() !== c.key">
+                    {{ catalog.categoryCounts()[c.key] }}
+                </span>
+            </button>
+        </li>
+        }
+    </ul>
+</div>

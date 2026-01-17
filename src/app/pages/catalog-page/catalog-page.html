@@ -1,1 +1,38 @@
-<p>catalog-page works!</p>
+<!-- catalog-page.html -->
+
+<!-- HERO + BUSCADOR -->
+<section class="bg-surface-light border-b border-gray-100">
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+        <div class="max-w-3xl mx-auto text-center mb-10">
+            <h2 class="text-4xl font-light text-primary mb-4">Catálogo de Productos</h2>
+            <p class="text-gray-500 text-sm max-w-lg mx-auto">
+                Calidad y profesionalidad en cada una de nuestras soluciones ortopédicas.
+            </p>
+        </div>
+
+        <app-catalog-search-bar></app-catalog-search-bar>
+    </div>
+</section>
+
+<!-- CONTENIDO -->
+<main class="max-w-[1440px] mx-auto px-6 md:px-12 py-12">
+    <div class="flex flex-col lg:flex-row gap-16">
+        <!-- SIDEBAR -->
+        <aside class="w-full lg:w-64 flex-shrink-0">
+            <div class="sticky top-28">
+                <app-catalog-sidebar></app-catalog-sidebar>
+            </div>
+        </aside>
+
+        <!-- LISTADO -->
+        <section class="flex-1">
+            <app-catalog-toolbar></app-catalog-toolbar>
+
+            <app-product-grid></app-product-grid>
+
+            <div class="mt-20">
+                <app-catalog-pagination></app-catalog-pagination>
+            </div>
+        </section>
+    </div>
+</main>

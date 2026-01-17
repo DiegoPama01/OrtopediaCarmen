@@ -1,0 +1,19 @@
+<nav class="mt-12 flex items-center justify-center gap-2">
+    <button class="px-3 py-2 rounded-lg border border-gray-200 text-sm enabled:hover:cursor-pointer
+           disabled:opacity-40" (click)="prev()" [disabled]="currentPage === 1">
+        ←
+    </button>
+
+    @for (p of pages; track p) {
+    <button class="px-3 py-2 rounded-lg border text-sm transition hover:cursor-pointer
+             hover:border-accent/40" [class.border-accent]="p === currentPage" [class.bg-accent/10]="p === currentPage"
+        [class.text-accent]="p === currentPage" (click)="goTo(p)">
+        {{ p }}
+    </button>
+    }
+
+    <button class="px-3 py-2 rounded-lg border border-gray-200 text-sm enabled:hover:cursor-pointer
+           disabled:opacity-40" (click)="next()" [disabled]="currentPage === totalPages">
+        →
+    </button>
+</nav>

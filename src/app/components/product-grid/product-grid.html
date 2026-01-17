@@ -1,0 +1,20 @@
+@if (catalog.totalFiltered() === 0) {
+<div class="border border-gray-100 rounded-xl bg-white p-10 text-center">
+    <p class="text-primary font-bold mb-2">No hay resultados</p>
+    <p class="text-sm text-gray-500">
+        Prueba con otra búsqueda o ajusta los filtros.
+    </p>
+
+    <button type="button"
+        class="mt-6 px-5 py-2.5 bg-primary text-white text-xs font-bold uppercase tracking-widest hover:bg-brand-dark transition-all rounded"
+        (click)="catalog.resetAll()">
+        Limpiar filtros
+    </button>
+</div>
+} @else {
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-y-12 gap-x-8">
+    @for (p of catalog.pageItems(); track p.id) {
+    <app-product-card [product]="p"></app-product-card>
+    }
+</div>
+}
