@@ -1,0 +1,135 @@
+<div
+    class="flex flex-wrap items-center gap-4 bg-white dark:bg-[#2d2218] mb-6 p-4 rounded-xl border border-[#e6e0db] dark:border-[#3d3228]">
+    <div class="relative flex-1 min-w-[240px]">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#897561]">search</span>
+        <input
+            class="w-full pl-10 pr-4 py-2 bg-background-light dark:bg-white/5 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+            [placeholder]="config.searchPlaceholder ?? 'Buscar...'" type="text" [value]="store.search()"
+            (input)="store.setSearch(($any($event.target)).value)" />
+    </div>
+
+    @if (config.selectFilter) {
+    <div class="flex items-center gap-2">
+        <select
+            class="bg-background-light dark:bg-white/5 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary py-2 px-4 pr-10 hover:cursor-pointer"
+            [value]="config.selectFilter.value()" (change)="config.selectFilter.onChange(($any($event.target)).value)">
+            <option value="ALL">{{ config.selectFilter.labelAll }}</option>
+            @for (opt of config.selectFilter.options(); track opt) {
+            <option [value]="opt">{{ opt }}</option>
+            }
+        </select>
+    </div>
+    }
+</div>
+
+<div class="bg-white dark:bg-[#2d2218] mb-6 rounded-xl border border-[#e6e0db] dark:border-[#3d3228] overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-background-light/50 dark:bg-white/5 border-b border-[#e6e0db] dark:border-[#3d3228]">
+                    @for (col of config.columns; track col.key) {
+                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[#897561] dark:text-[#b5a595]"
+                        [class]="col.widthClass ?? ''" [class.text-right]="col.align === 'right'">
+                        {{ col.header }}
+                    </th>
+                    }
+                    @if (config.actions?.length) {
+                    <th
+                        class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[#897561] dark:text-[#b5a595] text-right">
+                        Acciones
+                    </th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-[#e6e0db] dark:divide-[#3d3228]">
+                @for (row of store.pageItems(); track trackRow($index, row)) {
+                <tr class="hover:bg-background-light/30 dark:hover:bg-white/5 transition-colors">
+                    @for (col of config.columns; track col.key) {
+                    <td class="px-6 py-4" [class.text-right]="col.align === 'right'">
+
+                        @if (col.kind === 'image') {
+                        <div class="w-12 h-12 bg-center bg-cover rounded-lg border border-[#e6e0db] dark:border-[#3d3228]"
+                            [style.background-image]="(col.field ? row[col.field] : col.value?.(row)) ? 'url(' + (col.field ? row[col.field] : col.value?.(row)) + ')' : null">
+                        </div>
+                        }
+
+                        @else if (col.kind === 'badge') {
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#f4f2f0] dark:bg-white/10 text-[#181411] dark:text-white">
+                            {{ col.value ? col.value(row) : (col.field ? row[col.field] : '') }}
+                        </span>
+                        }
+
+                        @else {
+                        <span class="text-sm text-[#181411] dark:text-white {{ col.style }}">
+                            {{ col.value ? col.value(row) : (col.field ? row[col.field] : '') }}
+                        </span>
+                        }
+                    </td>
+                    }
+
+                    @if (config.actions?.length) {
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            @for (a of config.actions; track a.icon) {
+                            <button type="button" (click)="a.onClick(row)"
+                                class="p-2 rounded-lg transition-all hover:cursor-pointer"
+                                [class.text-[#897561]]="a.tone !== 'danger'"
+                                [class.hover:text-primary]="a.tone !== 'danger'"
+                                [class.hover:bg-primary/10]="a.tone !== 'danger'"
+                                [class.text-red-500]="a.tone === 'danger'"
+                                [class.hover:bg-red-500/10]="a.tone === 'danger'">
+                                <span class="material-symbols-outlined text-[20px]">{{ a.icon }}</span>
+                            </button>
+                            }
+                        </div>
+                    </td>
+                    }
+                </tr>
+                }
+
+                @if (store.total() === 0) {
+                <tr>
+                    <td class="px-6 py-10 text-center text-sm text-[#897561] dark:text-[#b5a595]"
+                        [attr.colspan]="config.columns.length + (config.actions?.length ? 1 : 0)">
+                        No hay resultados.
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div
+    class="flex items-center justify-between p-4 bg-white dark:bg-[#2d2218] rounded-xl border border-[#e6e0db] dark:border-[#3d3228]">
+    <p class="text-sm text-[#897561] dark:text-[#b5a595]">
+        Mostrando
+        <span class="font-bold text-[#181411] dark:text-white">{{ store.rangeText() }}</span>
+        de
+        <span class="font-bold text-[#181411] dark:text-white">{{ store.total() }}</span>
+    </p>
+
+    <div class="flex items-center gap-1">
+        <button type="button" (click)="store.prevPage()" [disabled]="store.pageIndex() === 0"
+            class="flex size-9 items-center justify-center rounded-lg hover:bg-background-light dark:hover:bg-white/5 transition-colors disabled:opacity-40 enabled:hover:cursor-pointer">
+            <span class="material-symbols-outlined text-sm">chevron_left</span>
+        </button>
+
+        @for (i of [].constructor(store.totalPages()); track $index) {
+        <button type="button" (click)="store.setPage($index)"
+            class="text-sm font-medium flex size-9 items-center justify-center rounded-lg transition-colors hover:cursor-pointer"
+            [class.bg-primary]="store.pageIndex() === $index" [class.text-white]="store.pageIndex() === $index"
+            [class.hover:bg-background-light]="store.pageIndex() !== $index"
+            [class.dark:hover:bg-white/5]="store.pageIndex() !== $index">
+            {{ $index + 1 }}
+        </button>
+        }
+
+        <button type="button" (click)="store.nextPage()" [disabled]="store.pageIndex() >= store.totalPages() - 1"
+            class="flex size-9 items-center justify-center rounded-lg hover:bg-background-light dark:hover:bg-white/5 transition-colors disabled:opacity-40 enabled:hover:cursor-pointer">
+            <span class="material-symbols-outlined text-sm">chevron_right</span>
+        </button>
+    </div>
+</div>

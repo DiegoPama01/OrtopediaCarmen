@@ -1,0 +1,20 @@
+<header class="bg-white dark:bg-[#2d2218] border-b border-[#e6e0db] dark:border-[#3d3228] p-6 lg:px-10">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-col gap-1">
+            <h2 class="text-[#181411] dark:text-white text-3xl font-black tracking-tight">
+                {{ header.title() }}
+            </h2>
+            <p class="text-[#897561] dark:text-[#b5a595] text-sm">
+                {{ header.subtitle() }}
+            </p>
+        </div>
+
+        @if (header.ctaLabel()) {
+        <button type="button" (click)="ctaClick()"
+            class="flex items-center justify-center hover:cursor-pointer gap-2 rounded-lg h-11 px-6 bg-accent text-white text-sm font-bold shadow-md shadow-primary/20 hover:bg-[#d46f0f] transition-colors">
+            <span class="material-symbols-outlined">add_circle</span>
+            <span>{{ header.ctaLabel() }}</span>
+        </button>
+        }
+    </div>
+</header>

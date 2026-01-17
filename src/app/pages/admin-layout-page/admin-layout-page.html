@@ -1,0 +1,13 @@
+<div class="bg-background-light dark:bg-background-dark text-[#181411] dark:text-white min-h-screen flex font-display">
+    <app-admin-sidebar class="hidden md:flex"></app-admin-sidebar>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <app-admin-header></app-admin-header>
+
+        <section class="flex-1 overflow-y-auto p-6 lg:p-10">
+            <div class="max-w-6xl mx-auto space-y-6">
+                <router-outlet></router-outlet>
+            </div>
+        </section>
+    </main>
+</div>

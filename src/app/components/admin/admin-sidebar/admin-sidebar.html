@@ -1,0 +1,42 @@
+<aside
+    class="w-64 flex-shrink-0 bg-white dark:bg-[#2d2218] border-r border-[#e6e0db] dark:border-[#3d3228] flex flex-col">
+    <div class="flex flex-col h-full p-4 justify-between">
+        <div class="flex flex-col gap-8">
+            <div class="flex flex-col px-3">
+                <h1 class="text-accent text-xl font-bold leading-tight">Ortopedia Carmen</h1>
+                <p class="text-primary text-xs font-medium uppercase tracking-wider mt-1">
+                    Panel de Control
+                </p>
+            </div>
+
+            <nav class="flex flex-col gap-1">
+                <a routerLink="/admin/products" routerLinkActive="bg-accent/10 text-accent font-semibold"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#181411] dark:text-white hover:bg-background-light dark:hover:bg-white/5 transition-colors">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                    <span class="text-sm">Productos</span>
+                </a>
+
+                <a routerLink="/admin/categories" routerLinkActive="bg-accent/10 text-accent font-semibold"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#181411] dark:text-white hover:bg-background-light dark:hover:bg-white/5 transition-colors">
+                    <span class="material-symbols-outlined">category</span>
+                    <span class="text-sm font-medium">Categorías</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <div
+                class="px-3 py-4 rounded-xl bg-background-light dark:bg-white/5 border border-[#e6e0db] dark:border-white/10">
+                <p class="text-xs text-[#897561] dark:text-[#b5a595] font-medium">Usuario: Admin</p>
+                <p class="text-sm font-bold truncate">{{ auth.user()?.email }}</p>
+            </div>
+
+            <a routerLink="/catalog"
+                class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-accent text-white text-sm font-bold transition-transform active:scale-95">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Ver Tienda</span>
+            </a>
+        </div>
+    </div>
+</aside>

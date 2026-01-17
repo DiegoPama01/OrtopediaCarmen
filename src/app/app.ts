@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 // Re-trigger build
-import { HeaderComponent } from './components/header/header.component';
-import { FooterComponent } from './components/footer/footer.component';
+import { HeaderComponent } from './components/layout/header/header.component';
+import { FooterComponent } from './components/layout/footer/footer.component';
 import { filter } from 'rxjs';
 
 @Component({
@@ -24,7 +24,7 @@ export class App {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.showLayout.set(!event.urlAfterRedirects.includes('/login'));
+      this.showLayout.set(!event.urlAfterRedirects.includes('/login') && !event.urlAfterRedirects.includes('/admin'));
     });
   }
 }

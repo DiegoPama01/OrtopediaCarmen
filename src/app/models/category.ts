@@ -4,3 +4,10 @@ export interface Category {
     description: string;
     link: string;
 }
+
+export interface CategoryItem {
+    id: string;
+    name: string;
+    description: string;
+    productsCount: number;
+}

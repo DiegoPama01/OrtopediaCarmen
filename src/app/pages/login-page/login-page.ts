@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthCard } from '../../components/auth-card/auth-card';
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../services/authService';
 import { Router } from '@angular/router';
 
 @Component({
@@ -35,7 +35,7 @@ export class LoginPage {
     this.submitting = false;
 
     if (res.ok) {
-      await this.router.navigateByUrl('/catalog');
+      await this.router.navigateByUrl('/admin');
     }
   }
 }

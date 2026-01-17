@@ -1,5 +1,6 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { Availability, Product, ProductService } from './productService';
+import { ProductService } from './productService';
+import { ProductItem } from '../models/product';
 
 export type SortOption = 'newest' | 'priceAsc' | 'priceDesc' | 'nameAsc';
 
@@ -28,9 +29,9 @@ export class CatalogService {
   readonly pageIndex = signal<number>(0);
   readonly pageSize = signal<number>(12);
 
-  readonly products = this.productService.products;
+  readonly products = this.productService.items;
 
-  readonly filtered = computed<Product[]>(() => {
+  readonly filtered = computed<ProductItem[]>(() => {
     const term = this.searchTerm().trim().toLowerCase();
     const cat = this.selectedCategory();
     const min = this.minPrice();
@@ -44,8 +45,8 @@ export class CatalogService {
       if (cat !== 'ALL' && p.category !== cat) return false;
 
       const okAvailability =
-        (allowInStock && p.availability === 'in_stock') ||
-        (allowBackorder && p.availability === 'backorder');
+        (allowInStock && p.stock === 'in_stock') ||
+        (allowBackorder && p.stock === 'backorder');
       if (!okAvailability) return false;
 
       if (p.price < min || p.price > max) return false;
@@ -61,7 +62,7 @@ export class CatalogService {
 
   readonly totalFiltered = computed(() => this.filtered().length);
 
-  readonly filteredSorted = computed<Product[]>(() => {
+  readonly filteredSorted = computed<ProductItem[]>(() => {
     const items = [...this.filtered()];
     const sort = this.sort();
 
@@ -82,7 +83,7 @@ export class CatalogService {
     return items;
   });
 
-  readonly pageItems = computed<Product[]>(() => {
+  readonly pageItems = computed<ProductItem[]>(() => {
     const start = this.pageIndex() * this.pageSize();
     const end = start + this.pageSize();
     return this.filteredSorted().slice(start, end);
@@ -111,7 +112,11 @@ export class CatalogService {
     };
     const all = this.products();
     counts.ALL = all.length;
-    for (const p of all) counts[p.category] += 1;
+    for (const p of all) {
+      if (p.category in counts && p.category !== 'ALL') {
+        counts[p.category as Category] += 1;
+      }
+    }
     return counts;
   });
 

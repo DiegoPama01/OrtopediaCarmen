@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Product } from '../../../services/productService';
+import { ProductItem } from '../../../models/product';
 import { DecimalPipe } from '@angular/common';
 
 @Component({
@@ -10,9 +10,9 @@ import { DecimalPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCard {
-  @Input({ required: true }) product!: Product;
+  @Input({ required: true }) product!: ProductItem;
 
   get availabilityLabel() {
-    return this.product.availability === 'in_stock' ? 'En Stock' : 'Bajo Pedido';
+    return this.product.stock === 'in_stock' ? 'En Stock' : 'Bajo Pedido';
   }
 }
