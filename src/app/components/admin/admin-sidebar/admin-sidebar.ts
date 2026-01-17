@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/authService';
+import { AdminSidebarService } from '../../../services/adminSidebarService';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -11,4 +12,5 @@ import { AuthService } from '../../../services/authService';
 })
 export class AdminSidebar {
   auth = inject(AuthService);
+  sidebarSvc = inject(AdminSidebarService);
 }

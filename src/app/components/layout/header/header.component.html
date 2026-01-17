@@ -1,25 +1,72 @@
 <header class="w-full bg-white sticky top-0 z-50 border-b border-gray-100">
   <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
     <div class="logo-container">
-      <img class="w-32" src="logo/Logo light.png" alt="Logo Ortopedia Carmen">
+      <a routerLink="/home" (click)="closeMenu()">
+        <img class="w-24 md:w-32" src="logo/Logo light.png" alt="Logo Ortopedia Carmen">
+      </a>
     </div>
+
+    <!-- Desktop Navigation -->
     <nav class="hidden lg:flex items-center gap-8">
-      <a routerLink="/home" routerLinkActive="text-accent border-b-2 border-accent" class="text-gray-500 text-xs font-bold uppercase hover:cursor-pointer tracking-widest
-           hover:text-accent transition-colors pb-1">
+      <a routerLink="/home" routerLinkActive="text-accent border-b-2 border-accent"
+        class="text-gray-500 text-xs font-bold uppercase hover:cursor-pointer tracking-widest hover:text-accent transition-colors pb-1">
         Inicio
       </a>
 
-      <a routerLink="/catalog" routerLinkActive="text-accent border-b-2 border-accent" class="text-gray-500 text-xs font-bold uppercase hover:cursor-pointer tracking-widest
-           hover:text-accent transition-colors pb-1">
+      <a routerLink="/catalog" routerLinkActive="text-accent border-b-2 border-accent"
+        class="text-gray-500 text-xs font-bold uppercase hover:cursor-pointer tracking-widest hover:text-accent transition-colors pb-1">
         Catálogo
       </a>
 
-      <a href="#visitanos" class="text-xs font-bold uppercase hover:cursor-pointer tracking-widest
-           bg-accent text-white px-6 py-2.5 rounded-md
-           hover:brightness-110 transition-all shadow-sm">
+      <a href="#visitanos"
+        class="text-xs font-bold uppercase hover:cursor-pointer tracking-widest bg-accent text-white px-6 py-2.5 rounded-md hover:brightness-110 transition-all shadow-sm">
         Contacto
       </a>
     </nav>
 
+    <!-- Mobile Menu Button -->
+    <button (click)="toggleMenu()" class="lg:hidden p-2 text-primary hover:text-accent transition-colors">
+      <span class="material-symbols-outlined text-3xl">
+        {{ isMenuOpen() ? 'close' : 'menu' }}
+      </span>
+    </button>
   </div>
+
+  <!-- Mobile Navigation Overlay -->
+  @if (isMenuOpen()) {
+  <div class="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" (click)="closeMenu()"></div>
+  <div
+    class="lg:hidden fixed top-0 right-0 bottom-0 w-[75%] max-w-[300px] z-50 bg-white pt-24 px-6 flex flex-col gap-8 animate-in slide-in-from-right duration-300 shadow-2xl">
+    <nav class="flex flex-col gap-6">
+      <a routerLink="/home" routerLinkActive="text-accent pl-4 border-l-4 border-accent"
+        [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()"
+        class="text-gray-900 text-xl font-bold uppercase tracking-widest py-2">
+        Inicio
+      </a>
+
+      <a routerLink="/catalog" routerLinkActive="text-accent pl-4 border-l-4 border-accent" (click)="closeMenu()"
+        class="text-gray-900 text-xl font-bold uppercase tracking-widest py-2">
+        Catálogo
+      </a>
+
+      <a href="#visitanos" (click)="closeMenu()" class="text-accent text-xl font-bold uppercase tracking-widest py-2">
+        Contacto
+      </a>
+
+      <hr class="border-gray-100 my-4">
+
+      <div class="flex flex-col gap-4">
+        <p class="text-primary text-sm font-bold">Contacto Directo</p>
+        <a href="tel:+34928072698" class="flex items-center gap-3 text-gray-600">
+          <span class="material-symbols-outlined">call</span>
+          <span class="text-sm">928 072 698</span>
+        </a>
+        <a href="mailto:ortopediacarmen@gmail.com" class="flex items-center gap-3 text-gray-600">
+          <span class="material-symbols-outlined">mail</span>
+          <span class="text-sm">Email</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+  }
 </header>

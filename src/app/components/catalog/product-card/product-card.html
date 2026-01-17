@@ -5,7 +5,7 @@
             class="w-full h-full object-contain p-10 grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
             [src]="product.imageUrl" />
         } @else {
-        <div class="w-full h-full flex items-center justify-center bg-surface-light">
+        <div class="w-full h-full flex items-center justify-center bg-background-light">
             <span class="material-symbols-outlined text-4xl text-gray-200">image</span>
         </div>
         }
@@ -17,12 +17,12 @@
             </span>
 
             @if (product.badges?.includes('Novedad')) {
-            <span class="bg-brand-orange text-white text-[9px] font-bold px-2 py-1 uppercase tracking-widest">
+            <span class="bg-accent text-white text-[9px] font-bold px-2 py-1 uppercase tracking-widest">
                 Novedad
             </span>
             }
             @if (product.badges?.includes('Top Ventas')) {
-            <span class="bg-brand-orange text-white text-[9px] font-bold px-2 py-1 uppercase tracking-widest">
+            <span class="bg-accent text-white text-[9px] font-bold px-2 py-1 uppercase tracking-widest">
                 Top Ventas
             </span>
             }
@@ -34,7 +34,7 @@
             {{ product.category?.name ?? 'Sin categoría' }}
         </span>
 
-        <h3 class="text-base font-medium text-primary mb-1 group-hover:text-brand-orange transition-colors">
+        <h3 class="text-base font-medium text-primary mb-1 group-hover:text-accent transition-colors">
             {{ product.name }}
         </h3>
 

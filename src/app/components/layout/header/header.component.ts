@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterLinkWithHref } from "@angular/router";
 
 @Component({
@@ -8,4 +8,14 @@ import { RouterLink, RouterLinkActive, RouterLinkWithHref } from "@angular/route
   styleUrl: './header.component.css',
   imports: [RouterLinkActive, RouterLinkWithHref, RouterLink]
 })
-export class HeaderComponent { }
+export class HeaderComponent {
+  isMenuOpen = signal(false);
+
+  toggleMenu() {
+    this.isMenuOpen.set(!this.isMenuOpen());
+  }
+
+  closeMenu() {
+    this.isMenuOpen.set(false);
+  }
+}
