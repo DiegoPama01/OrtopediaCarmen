@@ -7,6 +7,10 @@
 
 /* Tailwind directives are not needed since we are using CDN, but we can keep standard resets if any */
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Manrope', sans-serif;
   background-color: #ffffff;
