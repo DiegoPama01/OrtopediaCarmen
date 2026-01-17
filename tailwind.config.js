@@ -11,6 +11,8 @@ module.exports = {
                 accent: "#F27830",
                 "neutral-soft": "#f8f9fa",
                 "brand-bg": "#3D3D3D",
+                "background-light": "#f8f7f5",
+                "background-dark": "#221910",
             },
             fontFamily: {
                 display: ["Manrope", "sans-serif"],

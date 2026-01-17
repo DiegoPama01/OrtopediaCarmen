@@ -1,0 +1,70 @@
+<!-- Header / Navbar -->
+<header class="w-full bg-white dark:bg-black/20 border-b border-[#e6e0db] dark:border-white/10 px-6 py-4">
+    <div class="max-w-[1200px] mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3 text-[#181411] dark:text-white">
+            <div class="logo-container">
+                <img class="w-20" src="logo/Logo light.png" alt="Logo Ortopedia Carmen">
+            </div>
+        </div>
+    </div>
+</header>
+<main class="flex items-center justify-center p-6 min-h-[calc(100vh-160px)]">
+    <app-auth-card icon="admin_panel_settings" title="Acceso Administración"
+        subtitle="Inicie sesión para gestionar el portal de Ortopedia Carmen"
+        securityText="Acceso seguro con cifrado SSL">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5">
+            <div class="flex flex-col gap-2">
+                <label class="text-[#181411] dark:text-white text-sm font-semibold">Correo electrónico</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8a7560] text-[20px]">mail</span>
+                    <input formControlName="email"
+                        class="form-input w-full pl-11 pr-4 py-3 rounded-lg border border-[#e6e0db] dark:border-white/10 bg-white dark:bg-[#1a140f] text-[#181411] dark:text-white focus:border-[#f27f0d] focus:ring-1 focus:ring-[#f27f0d] placeholder:text-[#8a7560]/60 outline-none transition-all"
+                        placeholder="ejemplo@correo.com" type="email" />
+                </div>
+                @if(form.controls.email.touched && form.controls.email.hasError('required')) {
+                <p class="text-xs text-red-600">El correo es obligatorio</p>
+                }
+                @if(form.controls.email.touched && form.controls.email.hasError('email')) {
+                <p class="text-xs text-red-600">Introduce un correo válido</p>
+                }
+            </div>
+            <div class="flex flex-col gap-2">
+                <div class="flex justify-between items-center">
+                    <label class="text-[#181411] dark:text-white text-sm font-semibold">Contraseña</label>
+                    <a class="text-[#f27f0d] text-xs font-semibold hover:underline cursor-pointer">¿Olvidó su
+                        contraseña?</a>
+                </div>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8a7560] text-[20px]">lock</span>
+                    <input formControlName="password" [type]="showPassword ? 'text' : 'password'"
+                        class="form-input w-full pl-11 pr-12 py-3 rounded-lg border border-[#e6e0db] dark:border-white/10 bg-white dark:bg-[#1a140f] text-[#181411] dark:text-white focus:border-[#f27f0d] focus:ring-1 focus:ring-[#f27f0d] placeholder:text-[#8a7560]/60 outline-none transition-all"
+                        placeholder="••••••••" type="password" />
+                    <button (click)="showPassword = !showPassword"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8a7560] hover:text-[#f27f0d] transition-colors"
+                        type="button">
+                        <span class="material-symbols-outlined text-[20px]">
+                            {{ showPassword ? 'visibility_off' : 'visibility' }}
+                        </span>
+                    </button>
+                </div>
+                @if(form.controls.password.touched && form.controls.password.hasError('required')) {
+                <p class="text-xs text-red-600">La contraseña es obligatoria</p>
+                }
+                @if(form.controls.password.touched && form.controls.password.hasError('minlength')) {
+                <p class="text-xs text-red-600">Mínimo 6 caracteres</p>
+                }
+            </div>
+            <button
+                class="w-full mt-2 flex hover:cursor-pointer items-center justify-center bg-[#f27f0d] text-white font-bold py-3.5 rounded-lg transition-all hover:bg-[#f27f0d]/90 active:scale-[0.98] shadow-md shadow-[#f27f0d]/20"
+                type="submit">
+                Iniciar Sesión
+            </button>
+        </form>
+    </app-auth-card>
+</main>
+<footer class="w-full py-6 px-10 border-t border-[#e6e0db] dark:border-white/10 text-center">
+    <p class="text-[#8a7560] text-xs">© 2024 Ortopedia Carmen - Portal de Administración Interno. Todos los derechos
+        reservados.</p>
+</footer>

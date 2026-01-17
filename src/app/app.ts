@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 // Re-trigger build
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -16,5 +17,14 @@ import { FooterComponent } from './components/footer/footer.component';
   styleUrl: './app.css'
 })
 export class App {
-  title = 'Ortopedia Carmen';
+  private router = inject(Router);
+  showLayout = signal(true);
+
+  constructor() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.showLayout.set(!event.urlAfterRedirects.includes('/login'));
+    });
+  }
 }

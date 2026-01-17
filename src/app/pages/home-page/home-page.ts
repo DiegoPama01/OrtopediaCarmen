@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { HeroComponent } from '../../components/hero/hero.component';
-import { AboutComponent } from '../../components/about/about.component';
-import { CategoriesComponent } from '../../components/categories/categories.component';
-import { TestimonialsComponent } from '../../components/testimonials/testimonials.component';
-import { ContactComponent } from '../../components/contact/contact.component';
+import { HeroComponent } from '../../components/home/hero/hero.component';
+import { AboutComponent } from '../../components/home/about/about.component';
+import { CategoriesComponent } from '../../components/home/categories/categories.component';
+import { TestimonialsComponent } from '../../components/home/testimonials/testimonials.component';
+import { ContactComponent } from '../../components/home/contact/contact.component';
 
 @Component({
   selector: 'app-home-page',

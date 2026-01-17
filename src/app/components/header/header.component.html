@@ -3,15 +3,23 @@
     <div class="logo-container">
       <img class="w-32" src="logo/Logo light.png" alt="Logo Ortopedia Carmen">
     </div>
-    <nav class="hidden md:flex items-center gap-8">
-      <a class="text-xs font-bold uppercase tracking-widest text-primary hover:text-accent transition-colors"
-        href="#">Inicio</a>
-      <a class="text-xs font-bold uppercase tracking-widest text-primary hover:text-accent transition-colors"
-        href="#catalogo">Catálogo</a>
-      <a class="text-xs font-bold uppercase tracking-widest text-primary hover:text-accent transition-colors"
-        href="#visitanos">Visítanos</a>
-      <a class="text-xs font-bold uppercase tracking-widest bg-accent text-white px-6 py-2.5 rounded-md hover:brightness-110 transition-all shadow-sm"
-        href="#visitanos">Contacto</a>
+    <nav class="hidden lg:flex items-center gap-8">
+      <a routerLink="/home" routerLinkActive="text-accent border-b-2 border-accent" class="text-gray-500 text-xs font-bold uppercase hover:cursor-pointer tracking-widest
+           hover:text-accent transition-colors pb-1">
+        Inicio
+      </a>
+
+      <a routerLink="/catalog" routerLinkActive="text-accent border-b-2 border-accent" class="text-gray-500 text-xs font-bold uppercase hover:cursor-pointer tracking-widest
+           hover:text-accent transition-colors pb-1">
+        Catálogo
+      </a>
+
+      <a href="#visitanos" class="text-xs font-bold uppercase hover:cursor-pointer tracking-widest
+           bg-accent text-white px-6 py-2.5 rounded-md
+           hover:brightness-110 transition-all shadow-sm">
+        Contacto
+      </a>
     </nav>
+
   </div>
 </header>

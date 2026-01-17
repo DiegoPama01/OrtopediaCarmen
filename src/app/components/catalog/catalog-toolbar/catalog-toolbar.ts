@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CatalogService, SortOption } from '../../services/catalogService';
+import { CatalogService, SortOption } from '../../../services/catalogService';
 
 @Component({
   selector: 'app-catalog-toolbar',

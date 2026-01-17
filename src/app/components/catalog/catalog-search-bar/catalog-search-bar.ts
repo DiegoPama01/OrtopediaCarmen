@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CatalogService } from '../../services/catalogService';
+import { CatalogService } from '../../../services/catalogService';
 
 @Component({
   selector: 'app-catalog-search-bar',

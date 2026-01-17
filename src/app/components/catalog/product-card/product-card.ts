@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Product } from '../../services/productService';
+import { Product } from '../../../services/productService';
 import { DecimalPipe } from '@angular/common';
 
 @Component({

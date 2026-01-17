@@ -1,0 +1,25 @@
+<div
+    class="w-full max-w-[480px] bg-white dark:bg-[#2d241c] rounded-xl shadow-xl border border-[#e6e0db] dark:border-white/5 overflow-hidden">
+    <!-- Header -->
+    <div class="pt-10 pb-6 px-8 flex flex-col items-center">
+        <div class="w-20 h-20 bg-[#f27f0d]/10 rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-[#f27f0d] text-[40px]">{{ icon }}</span>
+        </div>
+        <h1 class="text-[#181411] dark:text-white text-2xl font-bold tracking-tight text-center">{{ title }}</h1>
+        @if (subtitle) {
+        <p class="text-[#8a7560] dark:text-[#a19181] text-sm mt-2 text-center">{{ subtitle }}</p>
+        }
+    </div>
+
+    <div class="px-8 pb-10">
+        <ng-content></ng-content>
+    </div>
+
+    <div
+        class="bg-[#fcfbf9] dark:bg-white/5 border-t border-[#e6e0db] dark:border-white/10 px-8 py-4 flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-[#8a7560] text-[16px]">{{ securityIcon }}</span>
+        <span class="text-[#8a7560] dark:text-[#a19181] text-xs">
+            {{ securityText }}
+        </span>
+    </div>
+</div>

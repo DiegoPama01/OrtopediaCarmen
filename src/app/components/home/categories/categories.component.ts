@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Category } from '../../models/category';
+import { Category } from '../../../models/category';
 import { CategoryCard } from '../category-card/category-card.component';
 
 @Component({

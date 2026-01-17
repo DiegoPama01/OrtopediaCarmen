@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CatalogService, Category } from '../../services/catalogService';
+import { CatalogService, Category } from '../../../services/catalogService';
 
 @Component({
   selector: 'app-category-filter',
